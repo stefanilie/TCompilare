@@ -22,6 +22,7 @@ class Tree:
 		self.arrFirstPos=[]
 		self.arrLastPos=[]
 		self.arrFollowPos=[]
+		self.bIsVisited=False
 
 	def addElement(self, value, bIsLettter=False):
 		if self.strValue==None:
@@ -56,7 +57,7 @@ class Tree:
 
 	def nullable(self, count):
 		if self.nCount == count:
-			if self.strValue=='^':
+			if self.strValue=='^' of self.strValue=='*':
 				return True
 			else:
 				return False
@@ -81,23 +82,32 @@ class Tree:
 				return self.nCount
 		elif self.strValue=='|':
 			if self.left.strValue!=None and self.right.strValue!=None:
-				self.arrFirstPos.append(self.left.firstPos(self.left.nCount))
-				self.arrFirstPos.append(self.right.firstPos(self.right.nCount))
+				if self.left.firstPos(self.left.nCount) not in self.arrFirstPos:
+					self.arrFirstPos.append(self.left.firstPos(self.left.nCount))
+				if self.right.firstPos(self.right.nCount) not in self.arrFirstPos
+					self.arrFirstPos.append(self.right.firstPos(self.right.nCount))
 				return self.arrFirstPos
 		elif self.strValue=='.':
 			if self.left.strValue!=None and self.right.strValue!=None:
 				if self.left.nullable(self.left.nCount):
-					self.arrFirstPos.append(self.left.firstPos(self.left.nCount))
-					self.arrFirstPos.append(self.right.firstPos(self.right.nCount))
+					if self.left.firstPos(self.left.nCount) not in self.arrFirstPos:
+						self.arrFirstPos.append(self.left.firstPos(self.left.nCount))
+					if self.right.firstPos(self.right.nCount) not in self.arrFirstPos:
+						self.arrFirstPos.append(self.right.firstPos(self.right.nCount))
 					return self.arrFirstPos
 				else:
 					return self.arrFirstPos.append(self.left.firstPos)
 		elif self.strValue=='*':
 			if self.left.strValue!=None and self.right.strValue==None:
-				return self.left.firstPos(self.left.nCount)
+				if self.left.firstPos(self.left.nCount) not in self.arrFirstPos:
+					self.arrFirstPos.append(self.left.firstPos(self.left.nCount))
+				return self.arrFirstPos
 			elif self.left.strValue==None and self.right.strValue!=None:
-				return self.right.firstPos(self.right.nCount)
+				if self.right.firstPos(self.right.nCount) not in self.arrFirstPos:
+					self.arrFirstPos.append(self.right.firstPos(self.right.nCount))
+				return self.arrFirstPos
 
+	#todo: 'not in array' feature
 	def lastPos(self, count):
 		if self.nCount==count:
 			if self.strValue=='^':
@@ -124,15 +134,25 @@ class Tree:
 			elif self.left.strValue==None and self.right.strValue!=None:
 				return self.right.lastPos(self.right.nCount)
 
-	#refa followPos cu caietul
+	#verifica neaparat daca faci copierea cum trebuie din lastpos in firstpos
 	def followPos(self, count):
-		if self.strValue=='.':
-			if self.left.strValue!=None and self.right.strValue!=None:
-				self.left.lastPos(self.left.nCount)
+		if self.left.strValue!=None:
+			self.left.lastPos(self.left.nCount)
+		if self.nCount==count and count!=0:
+			return self.arrLastPos
+		if self.strValue=='.' or self.strValue=='|':
 				for i in range(len(self.left.arrLastPos)):
-
-
-
+					for j in range(len(self.right.arrFirstPos)):
+						set(self.arrFollowPos.extend(self.followPos(i)))
+		if self.strValue=='*':
+			if self.left.strValue!=None and self.right.strValue==None:
+				for i in range(len(self.left.arrLastPos)):
+					for j in range(len(self.left.arrFirstPos)):
+						set(self.arrFollowPos.extend(self.followPos(i)))
+			elif self.left.strValue==None and self.right.strValue!=None:
+				for i in range(len(self.right.arrLastPos)):
+					for j in range(len(self.right.arrFirstPos)):
+						set(self.arrFollowPos.extend(self.followPos(i)))
 
 
 def parseAlphabet(inputed):
