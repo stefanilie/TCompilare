@@ -6,24 +6,54 @@ toate iesirile (siruri peste alfabetul de iesire) corespunzatoare.'''
 
 import sys
 
+def parseString(string):
+	return string.split(',')
+
+def parseRules(rules):
+	inter=[]
+	arrRules=[['' for x in range(3)] for x in range(len(rules))]
+	counter=0
+	for i in range(len(rules)):
+		rules[i]=rules[i].replace('\n', '')
+		inter.append(rules[i].split('->'))
+	for i in range(len(inter)):
+		temp=inter[i][1].split(',')
+		arrRules[i][0]=inter[i][0]
+		arrRules[i][1]=temp[0]
+		arrRules[i][2]=temp[1]
+	return arrRules
+
+
 def main():
-	neterminale=str(input('Introduceti neterminalele: '))
-	input_alfabet=str(input('Introduceti alfabetul de intrare: '))
-	output_alfabet=str(input('Introduceti alfabetul de iesire: '))
-	start_symbol=str(input('Introduceti simbolul de start: '))
+	f=open('input.txt', 'rw')
+
+	neterminale=f.readline()
+	arrNeterminale=parseString(neterminale)
+
+	input_alfabet=f.readline()
+	arrInputAlfa=parseString(input_alfabet)
+
+	output_alfabet=f.readline()
+	arrOutputAlfa=parseString(output_alfabet)
+
+	start_symbol=f.readline()
 
 	'''
 		TODO:
 			- parse input from rules
 			- ask for start symbol when entering
 	'''
-	nRules=str(input('Introduceti numarul de reguli:'))
+	ceva = f.readline()
+	nRules= int(ceva)
 	rules=[]
 	for i in range(nRules):
-		rules.append(str(input('Introduceti regula cu numarul '+i+': ')))
+		rules.append(f.readline())
+
+	arrRules=parseRules(rules)
+	#print 'P=('+str(arrNeterminale)+', '+str(arrInputAlfa)+', '+str(arrOutputAlfa)+', '+str(start_symbol)+', '+str(rules)+')'
 
 
 
 
-if __name__="__main__":
+if __name__=="__main__":
 	main()
