@@ -17,7 +17,7 @@ class Tree:
 		if self.value==None and self.left==None and self.right==None:
 			print 'in primul if'
 			self.value=value
-			self.left = Tree[2]
+			self.left = [Tree() for i in range(10)]
 			self.right = Tree()
 		elif value % 2 != 0:
 			self.left.addElement(value)

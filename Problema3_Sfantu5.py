@@ -12,6 +12,12 @@ import sys
 arrPrintElements=[]
 arrNumbers=[]
 counter=1
+class Automata:
+	bIsFinal=False
+	arrFollowPos={}
+
+
+
 class Tree:
 	def __init__(self):
 		self.left=None
@@ -42,7 +48,8 @@ class Tree:
 			arrNumbers.append(self.nCount)
 			self.left.print_tree()
 			self.right.print_tree()
-			
+
+
 	def addNumbers(self):
 		global counter
 		if self.strValue!=None:
@@ -51,13 +58,13 @@ class Tree:
 				self.nCount = counter
 				counter+=1
 			elif self.strValue == '|' or self.strValue=='*' or self.strValue=='.':
-				self.nCount=0
+				self.nCount=-counter
 			print 'sunt in nodul '+self.strValue+' si am counter='+str(self.nCount)+' si left= '+str(self.left.strValue)+' si right='+str(self.right.strValue)
 			self.right.addNumbers()
 
 	def nullable(self, count):
 		if self.nCount == count:
-			if self.strValue=='^' of self.strValue=='*':
+			if self.strValue=='^' or self.strValue=='*':
 				return True
 			else:
 				return False
@@ -73,39 +80,74 @@ class Tree:
 			elif self.left.strValue==None and self.right.strValue!=None:
 				return self.right.nullable(self.right.nCount)
 
+#returneaza array de array!!!!!!!!!!!!! vezi cum faci
+#eventual bagi chestie cu return element cu element
 	def firstPos(self, count):
+		value=0
+		print 'sunt in nodul '+str(self.strValue)+' cu indexul '+str(self.nCount)+' si count='+str(count)
 		if self.nCount==count:
+			print 'am intrat in self.nCount==count'
 			if self.strValue=='^':
+				print 'sunt pe ^'
 				return None
 			else: 
 				#sigur aici e asa?
+				print 'returneaza ncount=' +str(self.nCount)
 				return self.nCount
 		elif self.strValue=='|':
 			if self.left.strValue!=None and self.right.strValue!=None:
-				if self.left.firstPos(self.left.nCount) not in self.arrFirstPos:
-					self.arrFirstPos.append(self.left.firstPos(self.left.nCount))
-				if self.right.firstPos(self.right.nCount) not in self.arrFirstPos
-					self.arrFirstPos.append(self.right.firstPos(self.right.nCount))
-				return self.arrFirstPos
+				value=self.left.firstPos(count)
+				print 'value=', value
+				self.arrFirstPos.append(value)
+				print self.arrFirstPos
+				
+				value=self.right.firstPos(count)
+				self.arrFirstPos.append(value)
+
+				self.arrFirstPos = [x for x in self.arrFirstPos if x is not None]
+				return self.remove_duplicates(self.arrFirstPos)
 		elif self.strValue=='.':
+			#print '\tam itrat in pe al doilea else'
 			if self.left.strValue!=None and self.right.strValue!=None:
+				#print '\tstg si dr sunt dif de none'
+				print '?'+str(self.left.nullable(self.left.nCount))
 				if self.left.nullable(self.left.nCount):
-					if self.left.firstPos(self.left.nCount) not in self.arrFirstPos:
-						self.arrFirstPos.append(self.left.firstPos(self.left.nCount))
-					if self.right.firstPos(self.right.nCount) not in self.arrFirstPos:
-						self.arrFirstPos.append(self.right.firstPos(self.right.nCount))
-					return self.arrFirstPos
+					#print 'self.left.nullable(self.left.count) e true'
+					value=self.left.firstPos(count)
+					self.arrFirstPos.append(value)
+
+					value=self.right.firstPos(count)
+					self.arrFirstPos.append(value)
+					
+					return self.remove_duplicates(self.arrFirstPos)
 				else:
-					return self.arrFirstPos.append(self.left.firstPos)
+					print 'sunt pe else de la nullable'
+					return self.arrFirstPos.append(self.left.firstPos(count))
 		elif self.strValue=='*':
-			if self.left.strValue!=None and self.right.strValue==None:
-				if self.left.firstPos(self.left.nCount) not in self.arrFirstPos:
-					self.arrFirstPos.append(self.left.firstPos(self.left.nCount))
-				return self.arrFirstPos
-			elif self.left.strValue==None and self.right.strValue!=None:
-				if self.right.firstPos(self.right.nCount) not in self.arrFirstPos:
-					self.arrFirstPos.append(self.right.firstPos(self.right.nCount))
-				return self.arrFirstPos
+			print str('am intrat in elif self.strValue==*:')
+			if self.left.strValue!=None:
+				print str('am intrat in if self.left.strValue!=None and self.right.strValue==None:')
+				value=self.left.firstPos(count)
+				self.arrFirstPos.append(value)
+				
+				return self.remove_duplicates(self.arrFirstPos)
+			elif self.right.strValue!=None:
+				print str('am intrat in elif self.left.strValue==None and self.right.strValue!=None:')
+				value=self.right.firstPos(count)
+				self.arrFirstPos.append(value)
+				return self.remove_duplicates(self.arrFirstPos)
+
+	def remove_duplicates(self, values):
+		print values
+		output = []
+		seen = set()
+		for value in values:
+# If value has not been encountered yet,
+# ... add it to both list and set.
+			if value not in seen:
+				output.append(value)
+				seen.add(value)
+		return output
 
 	#todo: 'not in array' feature
 	def lastPos(self, count):
@@ -154,6 +196,22 @@ class Tree:
 					for j in range(len(self.right.arrFirstPos)):
 						set(self.arrFollowPos.extend(self.followPos(i)))
 
+	def printRoot(self):
+		print 'This is the root: ', self.strValue
+
+	def printFirstPos(self):
+		if self.strValue!=None:
+			self.left.printFirstPos()
+			if self.left.strValue==None and self.right.strValue==None:
+				print 'First pos pentru '+str(self.strValue)+ ' cu indexul '+str(self.nCount)+' este:'+ str(self.arrFirstPos)
+			self.right.printFirstPos()
+
+	def printLastPos(self):
+		if self.strValue!=None:
+			self.left.printLastPos()
+			if self.left.strValue==None and self.right.strValue==None:
+				print 'Last pos pentru'+str(self.strValue)+' este:'+ str(self.arrLastPos)
+			self.right.printLastPos()
 
 def parseAlphabet(inputed):
 	isInputed = inputed
@@ -168,7 +226,20 @@ def checkExpression(expression, alphabet):
 				return False
 	return True
 
+def isLetter(char):
+	if char.isalpha():
+		return True
+	else:
+		return False
+
+#def buildTree(expression):
 def buildTree():
+#	for i in range(len(expression)-1):
+#		if isLetter(expression[i]) and expression[i-1] in [')', *]
+
+#a ='((a|b)*abb)'
+
+
 	root = Tree()
 	root.addElement('.')
 	root.addElement('#', True)
@@ -183,10 +254,47 @@ def buildTree():
 	root.addElement('a')
 
 	root.addNumbers()
-	root.firstPos()
-	root.lastPos()
-	root.print_tree()
+	'''for i in range(1, 7, 1):
+		root.firstPos(i)
+	root.printFirstPos()
 
+	for i in range(1, 7, 1):
+		root.lastPos(i)
+	root.printLastPos()'''
+	root.firstPos(1)
+	root.printFirstPos()
+	return root
+
+'''
+tf = dict()
+state_counter=0
+dictStates={}
+
+def createTransition(d, root):
+    dictRoot={}
+    #inversez keyul cu valueul ca sa pot sa accesez toate nodurile
+    for k, v in d.items():
+        dictRoot.setdefault(v, []).append(k)
+
+    #creez tranzitiile
+    for k, v in dictRoot.items():
+        arrFollowPos=[]
+        for i in range(len(v)):
+            arrFollowPos=list(set(arrFollowPos.append(root.followPos(v[i]))))
+        tf[(state_counter, k)] = arrFollowPos
+        state_counter+=1
+        dictStates.update({state_counter: arrFollowPos})
+        createTransition(arrFollowPos)
+        if k=='#':
+            accept_states.append(arrFollowPos)  
+
+states=[]
+for i in range(state_counter):
+    states.update(i)
+alphabet=[]
+alphabet = parseAlphabet(arrAlphabet)
+
+'''
 
 def main(argv):
 	if(len(sys.argv) != 1):
@@ -201,9 +309,12 @@ def main(argv):
 		strExpression += '#'
 	else:
 		sys.exit('Invalid expression for '+strAlphabet+' alphabet')'''
-	buildTree()
-	print arrPrintElements
-	print arrNumbers
+	root = buildTree()
+	root.printRoot()
+
+
+	#print arrPrintElements
+	#print arrNumbers
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
