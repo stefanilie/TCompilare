@@ -23,6 +23,12 @@ class STOS(object):
 		self.S = start_symbol
 		self.R = rules
 
+	@staticmethod
+	def find_first_pos(word, char):
+		for i in range(len(word)):
+			if char == word[i]:
+				return i
+
 	def insert_char_at_pos(char, pos, word):
 		word = word[:pos] + word[:pos+1]
 		word = word[:pos] + str(char) + word[pos:]
@@ -39,25 +45,36 @@ class STOS(object):
 	#do stuff again to populate queue with elemets to apply to words array
 	#print array of words.
 	
-	# def emptyQueue(self, arrQueue, arrWords):
-	# 	for queued in arrQueue: 
+	def emptyQueue(self, arrQueue, word):
+		arrWords = []
+		for queued in arrQueue: 
+				#this calls first pos with the word and the start symbol and with this
+				#calls insert_char_at_pos with the word and char to add.
+				word1 = insert_char_at_pos(queued[1], find_first_pos(word[0], queued[0]), word[0])
+				word2 = insert_char_at_pos(queued[2], find_first_pos(word[1], queued[0]), word[1])
+				arrWords.append((word1, word2))
+		return arrWords
+
+
+
 
 
 
 	# primeste cuvantul
 	# face in fct de reguli si aia e.
-	def do_stuff(self, ):
+	def do_stuff(self, arrWords):
 		arrRules = self.R
 		arrQueue = []
-		arrWords = Word()
-		for i in range(len(word1)):
-			if word1[i]=='S':
-				self.addToQueue(arrQueue, 'S')
-				self.emptyQueue(arrQueue, word1, word2)
-				#call function with updated word1
-			if word1[i]=='A':
-				self.addToQueue(arrQueue, 'A')
-				#call function with updated word2
+		for word in arrWords:
+			for i in range(len(word[0])):
+				if word[i]=='S':
+					self.addToQueue(arrQueue, 'S')
+					alteredWords = self.emptyQueue(arrQueue, arrQueue, word)
+					arrWords.append(alteredWords)
+					#call function with updated word1
+				if word1[i]=='A':
+					self.addToQueue(arrQueue, 'A')
+					#call function with updated word2
 
 def parseString(string):
 	return string.split(',')
