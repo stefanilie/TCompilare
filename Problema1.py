@@ -6,13 +6,71 @@ toate iesirile (siruri peste alfabetul de iesire) corespunzatoare.'''
 
 import sys
 
+class Word(object):
+	"""docstring for Word"""
+	def __init__(self, w1, w2):
+		super(Word, self).__init__()
+		self.word1 = w1
+		self.word2 = w2
+
+class STOS(object):
+	"""docstring for STOS"""
+	def __init__(self, neterminale, input_alfabet, output_alfabet, start_symbol, rules):
+		super(STOS, self).__init__()
+		self.N = neterminale 
+		self.Vi = input_alfabet
+		self.Ve = output_alfabet
+		self.S = start_symbol
+		self.R = rules
+
+	def insert_char_at_pos(char, pos, word):
+		word = word[:pos] + word[:pos+1]
+		word = word[:pos] + str(char) + word[pos:]
+		return word
+
+	def addToQueue(self, arrQueue, charToAdd):
+		for i in range(self.R):
+			if self.R[i][0] == charToAdd:
+				arrQueue.append(self.R[i])
+		return arrQueue
+
+	#for all elemets in arrQueue and all elemets of arrWords 
+	#apply rules from queue to elements that apply and delete them from queue
+	#do stuff again to populate queue with elemets to apply to words array
+	#print array of words.
+	
+	# def emptyQueue(self, arrQueue, arrWords):
+	# 	for queued in arrQueue: 
+
+
+
+	# primeste cuvantul
+	# face in fct de reguli si aia e.
+	def do_stuff(self, ):
+		arrRules = self.R
+		arrQueue = []
+		arrWords = Word()
+		for i in range(len(word1)):
+			if word1[i]=='S':
+				self.addToQueue(arrQueue, 'S')
+				self.emptyQueue(arrQueue, word1, word2)
+				#call function with updated word1
+			if word1[i]=='A':
+				self.addToQueue(arrQueue, 'A')
+				#call function with updated word2
+
 def parseString(string):
 	return string.split(',')
+
+
+# parseaza regulile in forma 
+# [['S', 'aAbA', ' aAA'], ['S', 'bAaA', ' bAA'], ['A', 'aAbA', ' AA'], 
+# ['A', 'bAaA', ' AA'], ['A', '^', ' ^']]
 
 def parseRules(rules):
 	inter=[]
 	arrRules=[['' for x in range(3)] for x in range(len(rules))]
-	counter=0
+	counter=0	
 	for i in range(len(rules)):
 		rules[i]=rules[i].replace('\n', '')
 		inter.append(rules[i].split('->'))
@@ -22,7 +80,6 @@ def parseRules(rules):
 		arrRules[i][1]=temp[0]
 		arrRules[i][2]=temp[1]
 	return arrRules
-
 
 def main():
 	f=open('input.txt', 'rw')
@@ -38,11 +95,7 @@ def main():
 
 	start_symbol=f.readline()
 
-	'''
-		TODO:
-			- parse input from rules
-			- ask for start symbol when entering
-	'''
+	#reading the no of rules
 	ceva = f.readline()
 	nRules= int(ceva)
 	rules=[]
@@ -50,8 +103,13 @@ def main():
 		rules.append(f.readline())
 
 	arrRules=parseRules(rules)
-	#print 'P=('+str(arrNeterminale)+', '+str(arrInputAlfa)+', '+str(arrOutputAlfa)+', '+str(start_symbol)+', '+str(rules)+')'
+	print arrRules
+	print 'P=('+str(arrNeterminale)+', '+str(arrInputAlfa)+', '+str(arrOutputAlfa)+', '+str(start_symbol)+', '+str(rules)+')'
 
+	word  =f.readline()
+	print word
+
+	# do_stuff()
 
 
 

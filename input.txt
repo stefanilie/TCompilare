@@ -1,7 +1,10 @@
-A B C
-V, B, A
-a, b, c
+S A
+a, b
+a, b
 S
-2
-S->aAbB, aaa
-A->aBBa, sss
+5
+S->aAbA, aAA
+S->bAaA, bAA
+A->aAbA, AA
+A->bAaA, AA
+A->^, ^
