@@ -8,3 +8,5 @@ S->bAaA, bAA
 A->aAbA, AA
 A->bAaA, AA
 A->^, ^
+1
+S,S

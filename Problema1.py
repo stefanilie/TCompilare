@@ -78,13 +78,16 @@ class STOS(object):
 					alteredWords = self.emptyQueue(arrQueue, arrQueue, word)
 					arrWords.append(alteredWords)
 					arrWords = removeOldWords(arrWords, alteredWords)
-			for i in range(len(word[1])):
-				if word[i] in self.N:
-					self.addToQueue(arrQueue, word[i])
-					alteredWords = self.emptyQueue(arrQueue, arrQueue, word)
-					arrWords.append(alteredWords)
-					arrWords = removeOldWords(arrWords, alteredWords)
-					#call function with updated word
+					# self.do_stuff(arrWords)
+		return arrWords
+			# for i in range(len(word[1])):
+			# 	if word[i] in self.N:
+			# 		self.addToQueue(arrQueue, word[i])
+			# 		alteredWords = self.emptyQueue(arrQueue, arrQueue, word)
+			# 		arrWords.append(alteredWords)
+			# 		arrWords = removeOldWords(arrWords, alteredWords)
+			# 		#call function with updated word
+
 
 def parseString(string):
 	return string.split(',')
@@ -101,12 +104,20 @@ def parseRules(rules):
 		rules[i]=rules[i].replace('\n', '')
 		inter.append(rules[i].split('->'))
 	for i in range(len(inter)):
-		temp=inter[i][1].split(',')
+		temp=inter[i][1].split(', ')
 		arrRules[i][0]=inter[i][0]
 		arrRules[i][1]=temp[0]
 		arrRules[i][2]=temp[1]
 	return arrRules
 
+# parses this "S, S"
+# into this: [["S", "S"]]
+def parseWords(words):
+	arrWords=[]
+	for i in range(words):
+		words[i] = word[i].replace('\n', '')
+		arrWords.append(words[i].split(', '))
+	return arrWords
 
 def main():
 	f=open('input.txt', 'rw')
@@ -139,10 +150,13 @@ def main():
 	#reading the no of words
 	ceva = f.readline()
 	nWords= int(ceva)
-	arrWords=[]
-
+	words=[]
 	for i in range(nWords):
-		arrWords.append(f.readline())
+		words.append(f.readline())
+	arrWords = parseWords(words)
+
+	print "Ză rezult!:"
+	print do_stuff(arrWords)
 
 	# do_stuff()
 
