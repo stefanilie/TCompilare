@@ -44,7 +44,6 @@ class STOS(object):
 	#apply rules from queue to elements that apply and delete them from queue
 	#do stuff again to populate queue with elemets to apply to words array
 	#print array of words.
-	
 	def emptyQueue(self, arrQueue, word):
 		arrWords = []
 		for queued in arrQueue: 
@@ -55,26 +54,37 @@ class STOS(object):
 				arrWords.append((word1, word2))
 		return arrWords
 
+	#this will delete the words that are the source of those altered by 'emptyQueue'
+	#it will search the words in altered words. If a word isn't altered and contains a non-terminal
+	#then it will be deleted.
+	def removeOldWords(self, arrWords, arrAltered):
+		for word in arrWords:
+			#maybe delete this
+			if word not in arrAltered:
+				for n in self.N:
+					#check after and also
+					if n in word[0] or n in word[1]:
+						arrWords.pop(arrWords.index(word))
+		return arrWords
 
 
-
-
-
-	# primeste cuvantul
-	# face in fct de reguli si aia e.
 	def do_stuff(self, arrWords):
 		arrRules = self.R
 		arrQueue = []
 		for word in arrWords:
 			for i in range(len(word[0])):
-				if word[i]=='S':
-					self.addToQueue(arrQueue, 'S')
+				if word[i] in self.N:
+					self.addToQueue(arrQueue, word[i])
 					alteredWords = self.emptyQueue(arrQueue, arrQueue, word)
 					arrWords.append(alteredWords)
-					#call function with updated word1
-				if word1[i]=='A':
-					self.addToQueue(arrQueue, 'A')
-					#call function with updated word2
+					arrWords = removeOldWords(arrWords, alteredWords)
+			for i in range(len(word[1])):
+				if word[i] in self.N:
+					self.addToQueue(arrQueue, word[i])
+					alteredWords = self.emptyQueue(arrQueue, arrQueue, word)
+					arrWords.append(alteredWords)
+					arrWords = removeOldWords(arrWords, alteredWords)
+					#call function with updated word
 
 def parseString(string):
 	return string.split(',')
@@ -83,7 +93,6 @@ def parseString(string):
 # parseaza regulile in forma 
 # [['S', 'aAbA', ' aAA'], ['S', 'bAaA', ' bAA'], ['A', 'aAbA', ' AA'], 
 # ['A', 'bAaA', ' AA'], ['A', '^', ' ^']]
-
 def parseRules(rules):
 	inter=[]
 	arrRules=[['' for x in range(3)] for x in range(len(rules))]
@@ -97,6 +106,7 @@ def parseRules(rules):
 		arrRules[i][1]=temp[0]
 		arrRules[i][2]=temp[1]
 	return arrRules
+
 
 def main():
 	f=open('input.txt', 'rw')
@@ -125,6 +135,14 @@ def main():
 
 	word  =f.readline()
 	print word
+
+	#reading the no of words
+	ceva = f.readline()
+	nWords= int(ceva)
+	arrWords=[]
+
+	for i in range(nWords):
+		arrWords.append(f.readline())
 
 	# do_stuff()
 
