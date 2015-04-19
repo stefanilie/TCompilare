@@ -1,12 +1,12 @@
-S A
-a, b
-a, b
+S,A
+a,b
+a,b
 S
 5
-S->aAbA, aAA
-S->bAaA, bAA
-A->aAbA, AA
-A->bAaA, AA
-A->^, ^
+S->aAbA,aAA
+S->bAaA,bAA
+A->aAbA,AA
+A->bAaA,AA
+A->^,^
 1
 S,S

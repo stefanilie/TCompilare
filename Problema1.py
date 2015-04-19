@@ -29,15 +29,17 @@ class STOS(object):
 			if char == word[i]:
 				return i
 
+	@staticmethod
 	def insert_char_at_pos(char, pos, word):
 		word = word[:pos] + word[:pos+1]
 		word = word[:pos] + str(char) + word[pos:]
 		return word
 
 	def addToQueue(self, arrQueue, charToAdd):
-		for i in range(self.R):
+		for i in range(len(self.R)):
 			if self.R[i][0] == charToAdd:
 				arrQueue.append(self.R[i])
+		print "addToQueue(q="+str(arrQueue)+", c="+str(charToAdd)+")"
 		return arrQueue
 
 	#for all elemets in arrQueue and all elemets of arrWords 
@@ -46,12 +48,14 @@ class STOS(object):
 	#print array of words.
 	def emptyQueue(self, arrQueue, word):
 		arrWords = []
+		print "I:emptyQueue(q="+str(arrQueue)+", w="+str(word)+")"
 		for queued in arrQueue: 
 				#this calls first pos with the word and the start symbol and with this
 				#calls insert_char_at_pos with the word and char to add.
-				word1 = insert_char_at_pos(queued[1], find_first_pos(word[0], queued[0]), word[0])
-				word2 = insert_char_at_pos(queued[2], find_first_pos(word[1], queued[0]), word[1])
+				word1 = self.insert_char_at_pos(queued[1], self.find_first_pos(word[0], queued[0]), word[0])
+				word2 = self.insert_char_at_pos(queued[2], self.find_first_pos(word[1], queued[0]), word[1])
 				arrWords.append((word1, word2))
+		print "D:emptyQueue(q="+str(arrQueue)+", arrw="+str(arrWords)+")"
 		return arrWords
 
 	#this will delete the words that are the source of those altered by 'emptyQueue'
@@ -73,11 +77,13 @@ class STOS(object):
 		arrQueue = []
 		for word in arrWords:
 			for i in range(len(word[0])):
-				if word[i] in self.N:
-					self.addToQueue(arrQueue, word[i])
-					alteredWords = self.emptyQueue(arrQueue, arrQueue, word)
+				print word[0][i]
+				print self.N
+				if word[0][i] in self.N:
+					self.addToQueue(arrQueue, word[0][i])
+					alteredWords = self.emptyQueue(arrQueue, word)
 					arrWords.append(alteredWords)
-					arrWords = removeOldWords(arrWords, alteredWords)
+					arrWords = self.removeOldWords(arrWords, alteredWords)
 					# self.do_stuff(arrWords)
 		return arrWords
 			# for i in range(len(word[1])):
@@ -90,6 +96,7 @@ class STOS(object):
 
 
 def parseString(string):
+	string = string.replace('\n', '')
 	return string.split(',')
 
 
@@ -104,7 +111,7 @@ def parseRules(rules):
 		rules[i]=rules[i].replace('\n', '')
 		inter.append(rules[i].split('->'))
 	for i in range(len(inter)):
-		temp=inter[i][1].split(', ')
+		temp=inter[i][1].split(',')
 		arrRules[i][0]=inter[i][0]
 		arrRules[i][1]=temp[0]
 		arrRules[i][2]=temp[1]
@@ -114,9 +121,9 @@ def parseRules(rules):
 # into this: [["S", "S"]]
 def parseWords(words):
 	arrWords=[]
-	for i in range(words):
-		words[i] = word[i].replace('\n', '')
-		arrWords.append(words[i].split(', '))
+	for i in range(len(words)):
+		words[i] = words[i].replace('\n', '')
+		arrWords.append(words[i].split(','))
 	return arrWords
 
 def main():
@@ -141,11 +148,8 @@ def main():
 		rules.append(f.readline())
 
 	arrRules=parseRules(rules)
-	print arrRules
-	print 'P=('+str(arrNeterminale)+', '+str(arrInputAlfa)+', '+str(arrOutputAlfa)+', '+str(start_symbol)+', '+str(rules)+')'
-
-	word  =f.readline()
-	print word
+	#print arrRules
+	#print 'P=('+str(arrNeterminale)+', '+str(arrInputAlfa)+', '+str(arrOutputAlfa)+', '+str(start_symbol)+', '+str(rules)+')'
 
 	#reading the no of words
 	ceva = f.readline()
@@ -154,9 +158,12 @@ def main():
 	for i in range(nWords):
 		words.append(f.readline())
 	arrWords = parseWords(words)
+	
+	objStos = STOS(arrNeterminale, arrInputAlfa, arrOutputAlfa, start_symbol, arrRules)
+	print "Za rezult!:"
+	print objStos.do_stuff(arrWords)
 
-	print "Ză rezult!:"
-	print do_stuff(arrWords)
+	
 
 	# do_stuff()
 
