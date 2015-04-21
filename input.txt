@@ -9,4 +9,4 @@ A->aAbA,AA
 A->bAaA,AA
 A->^,^
 1
-S,S
+baba

@@ -23,68 +23,85 @@ class STOS(object):
 		self.S = start_symbol
 		self.R = rules
 
-	#returns rule/rules that start with the first char of the word
-	def search_rule_by_char(char):
-		rules=[]
-		for rule in self.R:
-			if char == rule[1][0]:
-				rules.append(rule)
-		return rules
-
-	#searches rules by nnonterminal.
-	def search_rule_by_net(net):
-		rules=[]
-		for rule in self.R:
-			if net == rule[0]:
-				rules.append(rule)
-		return rules
-
-	#inserts rule at position, deleting the N that is found at that pos
-	def insert_rule_at_pos(rule, word, pos):
-		word = word[:pos] + word[pos+1:]
-		word = word[:pos] + str(rule[1]) + word[pos:]
-
-	#returns first pos of char found in word
-	def find_first_pos(char, word):
+	@staticmethod
+	def find_first_pos(word, char):
 		for i in range(len(word)):
-			if word[i]==char:
+			if char == word[i]:
+				print "find_first_pos(w="+str(word)+", c="+str(char)+"), return "+str(i)
 				return i
 
-	def apply_rule(rules, word):
-		for rule in rules:
-			self.insert_rule_at_pos(rule, word, self.find_first_pos(rule[0], word))
 
-	def try_shit(self, word, possible):
-		result_queue=[]
-		if possible == '':
-			rules = search_rule_by_char(word[0])
-			self.apply_rule(rules, possible)
-			#if rule is ok add to result by index of the rule list
-		else:
-		self.try_shit(word[1:], possible)
+	@staticmethod
+	def insert_char_at_pos(char, pos, word):
+		#print "\nI: insert_char_at_pos(c="+str(char)+", p="+str(pos)+", w="+str(word)+")"
+		word = word[:pos] + word[pos+1:]
+		#print "word= "+ str(word)
+		word = word[:pos] + str(char) + word[pos:]
+		#print "D: "+word
+		return word
+
+	def addToQueue(self, arrQueue, charToAdd):
+		for i in range(len(self.R)):
+			if self.R[i][0] == charToAdd:
+				arrQueue.append(self.R[i])
+		#print "addToQueue(q="+str(arrQueue)+", c="+str(charToAdd)+")"
+		return arrQueue
+
+	#for all elemets in arrQueue and all elemets of arrWords 
+	#apply rules from queue to elements that apply and delete them from queue
+	#do stuff again to populate queue with elemets to apply to words array
+	#print array of words.
+	def emptyQueue(self, arrQueue, word):
+		arrWords = []
+		arrToRemove=[]
+		print "I:emptyQueue(q="+str(arrQueue)+", w="+str(word)+")"
+		for queued in arrQueue: 
+				#this calls first pos with the word and the start symbol and with this
+				#calls insert_char_at_pos with the word and char to add.
+				word1 = self.insert_char_at_pos(queued[1], self.find_first_pos(word[0], queued[0]), word[0])
+				word2 = self.insert_char_at_pos(queued[2], self.find_first_pos(word[1], queued[0]), word[1])
+				#appending indexes of elemets to remove from queue
+				#arrToRemove.append(arrQueue.index(queued))
+				arrWords.append((word1, word2))
+		for i in range(len(arrQueue)):
+			arrQueue.pop(0)
+		print "D:emptyQueue(q="+str(arrQueue)+", arrw="+str(arrWords)+")"
+
+	#this will delete the words that are the source of those altered by 'emptyQueue'
+	#it will search the words in altered words. If a word isn't altered and contains a non-terminal
+	#then it will be deleted.
+	def removeOldWords(self, arrWords, arrAltered):
+		if arrAltered:
+			for word in arrWords:
+				#maybe delete this
+				if word not in arrAltered:
+					for n in self.N:
+						#check after and also
+						if n in word[0] or n in word[1]:
+							arrWords.pop(arrWords.index(word))
+		return arrWords
 
 
+	#try to make this recursive without the fo word in arrWords
 	def do_stuff(self, arrWords):
 		arrRules = self.R
 		arrQueue = []
 		for word in arrWords:
-			self.try_shit(word, '')
 
-
-			# if len(word[0]) == 1:
-			# 		if word[0][0] in self.N:
-			# 			self.addToQueue(arrQueue, word[0][0])
-			# 			alteredWords = self.emptyQueue(arrQueue, word)
-			# 			#maybe delete these 2
-			# 			arrWords.append(alteredWords)
-			# 			arrWords = self.removeOldWords(arrWords, alteredWords)
-			# else:
-			# 	for i in range(len(word[0])):
-			# 		if word[0][i] in self.N:
-			# 			self.addToQueue(arrQueue, word[0][i])
-			# 			alteredWords = self.emptyQueue(arrQueue, word)
-			# 			arrWords.append(alteredWords)
-			# 			arrWords = self.removeOldWords(arrWords, alteredWords)
+			if len(word[0]) == 1:
+					if word[0][0] in self.N:
+						self.addToQueue(arrQueue, word[0][0])
+						alteredWords = self.emptyQueue(arrQueue, word)
+						#maybe delete these 2
+						arrWords.append(alteredWords)
+						arrWords = self.removeOldWords(arrWords, alteredWords)
+			else:
+				for i in range(len(word[0])):
+					if word[0][i] in self.N:
+						self.addToQueue(arrQueue, word[0][i])
+						alteredWords = self.emptyQueue(arrQueue, word)
+						arrWords.append(alteredWords)
+						arrWords = self.removeOldWords(arrWords, alteredWords)
 				#print word[0][i]
 				#print self.N
 
