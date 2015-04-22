@@ -43,6 +43,7 @@ class STOS(object):
 	def insert_rule_at_pos(rule, word, pos):
 		word = word[:pos] + word[pos+1:]
 		word = word[:pos] + str(rule[1]) + word[pos:]
+		return word
 
 	#returns first pos of char found in word
 	def find_first_pos(char, word):
@@ -50,17 +51,19 @@ class STOS(object):
 			if word[i]==char:
 				return i
 
-	def apply_rule(rules, word):
+	def apply_rule(word, rules, word):
 		for rule in rules:
-			self.insert_rule_at_pos(rule, word, self.find_first_pos(rule[0], word))
+			word = self.insert_rule_at_pos(rule, word, self.find_first_pos(rule[0], word))
+			self.try_shit(word, rules, possible)
 
 	def try_shit(self, word, possible):
 		result_queue=[]
 		if possible == '':
 			rules = search_rule_by_char(word[0])
-			self.apply_rule(rules, possible)
+			self.apply_rule(word, rules, possible)
 			#if rule is ok add to result by index of the rule list
 		else:
+			self.check_if_valid(word, possible) #TODO
 		self.try_shit(word[1:], possible)
 
 
