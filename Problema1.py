@@ -51,6 +51,21 @@ class STOS(object):
 			if word[i]==char:
 				return i
 
+	def check_lenght(self, word, possible):
+		count=0
+		ok=False
+		for w in range(len(possible)):
+			#daca litera e in alf de intrare, 
+			if possible[w] in self.Vi:
+				count+=1
+			#daca e adevarat atunci inseamna ca possible contine litera mare
+			if possible[w] in self.N:
+				ok=True
+		if count > len(word) or (count == len(word) and ok):
+			return False
+		else:
+			return True
+
 	def apply_rule(word, rules, word):
 		for rule in rules:
 			word = self.insert_rule_at_pos(rule, word, self.find_first_pos(rule[0], word))
@@ -58,6 +73,8 @@ class STOS(object):
 
 	def try_shit(self, word, possible):
 		result_queue=[]
+		if self.check_lenght(word, possible):
+			
 		if possible == '':
 			rules = search_rule_by_char(word[0])
 			self.apply_rule(word, rules, possible)
