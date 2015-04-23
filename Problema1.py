@@ -89,34 +89,7 @@ class STOS(object):
 		arrQueue = []
 		for word in arrWords:
 			self.try_shit(word, '')
-
-
-			# if len(word[0]) == 1:
-			# 		if word[0][0] in self.N:
-			# 			self.addToQueue(arrQueue, word[0][0])
-			# 			alteredWords = self.emptyQueue(arrQueue, word)
-			# 			#maybe delete these 2
-			# 			arrWords.append(alteredWords)
-			# 			arrWords = self.removeOldWords(arrWords, alteredWords)
-			# else:
-			# 	for i in range(len(word[0])):
-			# 		if word[0][i] in self.N:
-			# 			self.addToQueue(arrQueue, word[0][i])
-			# 			alteredWords = self.emptyQueue(arrQueue, word)
-			# 			arrWords.append(alteredWords)
-			# 			arrWords = self.removeOldWords(arrWords, alteredWords)
-				#print word[0][i]
-				#print self.N
-
-						# self.do_stuff(arrWords)
 		return arrWords
-			# for i in range(len(word[1])):
-			# 	if word[i] in self.N:
-			# 		self.addToQueue(arrQueue, word[i])
-			# 		alteredWords = self.emptyQueue(arrQueue, arrQueue, word)
-			# 		arrWords.append(alteredWords)
-			# 		arrWords = removeOldWords(arrWords, alteredWords)
-			# 		#call function with updated word
 
 
 def parseString(string):
