@@ -16,22 +16,7 @@ class Productie {
         this.out1 = o1;
         this.out2 = o2;
     }
-
-    @Override
-    public String toString() {
-        return out1 + "|" + out2;
-    }
-}
-
-class Pereche{
-    int left, right;
-            
-    public Pereche(int l, int r){
-        this.left = l;
-        this.right = r;
-    }
-    
-    @Override
+  
     public String toString(){
         return "(" + left + ", " + right + ")";
     }
@@ -52,18 +37,18 @@ class STOS {
     public STOS(String filename) {
         try {
             Scanner sc = new Scanner(new java.io.File(filename));
-            this.Productii = new ArrayList<>();
-            this.Alfabet_in = new ArrayList<>();
-            this.Alfabet_out = new ArrayList<>();
-            this.Output = new ArrayList<>();
-            this.prime_posibilitati = new ArrayList<>();
-            this.Productii_aplicate = new ArrayList<>();
+            this.Productii = new ArrayList();
+            this.Alfabet_in = new ArrayList();
+            this.Alfabet_out = new ArrayList();
+            this.Output = new ArrayList();
+            this.prime_posibilitati = new ArrayList();
+            this.Productii_aplicate = new ArrayList();
             this.NETERMINALE = sc.nextInt();
             this.SIR_GASIT = 0;
             int in, out, nr_prod;
 
             for (int i = 0; i < NETERMINALE; i++) {
-                Productii.add(new ArrayList<>());
+                Productii.add(new ArrayList());
             }
 
             in = sc.nextInt();  //terminale intrare
@@ -139,7 +124,7 @@ class STOS {
      */
     public void start(String sir_in) {
         ArrayList<Productie> a = Productii.get(0);
-        ArrayList<String> terminale_prefix = new ArrayList<>();
+        ArrayList<String> terminale_prefix = new ArrayList();
         String prefix;
         this.sir_intrare = sir_in.trim();
 
@@ -170,7 +155,7 @@ class STOS {
     */
     public ArrayList<Pereche> get_productii(String sir_prod, int prod_in){
         sir_prod = "0" + prod_in + sir_prod;
-        ArrayList<Pereche> ap = new ArrayList<>();
+        ArrayList<Pereche> ap = new ArrayList();
         for (int i = 0; i < sir_prod.length() - 1; i += 2){
             Pereche p = new Pereche(Integer.parseInt(sir_prod.charAt(i) + ""),
                                     Integer.parseInt(sir_prod.charAt(i + 1) + ""));
